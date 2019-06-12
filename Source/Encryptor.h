@@ -44,7 +44,7 @@ public:
         FileChooser chooser("Choose key save location",
                     File::getCurrentWorkingDirectory(),
                     "*.wav",
-                    true,
+                    false,
                     false,
                     nullptr);
         
@@ -121,7 +121,7 @@ public:
         FileChooser originalFolderChooser("Choose original wavs folder",
                                             File::getCurrentWorkingDirectory(),
                                             "",
-                                            true,
+                                            false,
                                             false,
                                             nullptr);
         
@@ -138,7 +138,7 @@ public:
         FileChooser keyFileChooser("Select Key File",
                                           File::getCurrentWorkingDirectory(),
                                           "*.wav",
-                                          true,
+                                          false,
                                           false,
                                           nullptr);
         
@@ -264,7 +264,7 @@ public:
         FileChooser encryptedFolderChooser("Choose original wavs folder",
                                           File::getCurrentWorkingDirectory(),
                                           "",
-                                          true,
+                                          false,
                                           false,
                                           nullptr);
         
@@ -281,7 +281,7 @@ public:
         FileChooser keyFileChooser("Select Key File",
                                    File::getCurrentWorkingDirectory(),
                                    "*.wav",
-                                   true,
+                                   false,
                                    false,
                                    nullptr);
         
