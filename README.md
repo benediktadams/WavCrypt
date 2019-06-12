@@ -1,6 +1,6 @@
 # WavCrypt
 
-WavCrypt is a small C++ / JUCE tool, which can generate a unique “Noise Key” and “encrypt/decrypt” .wav Files by adding/substracting the noise key from the signal. 
+WavCrypt is a small C++ / JUCE tool, which can generate a unique “Noise Key” and obfuscate .wav Files by adding/substracting the noise key from the signal. 
 
 
 ## Usage:
