@@ -81,7 +81,7 @@ public:
         
         auto* outStream = new FileOutputStream(keyFile);
         
-        if (ScopedPointer<AudioFormatWriter> audioWriter = wavFormat->createWriterFor(outStream, 44100, numChannels, 24, StringPairArray(), 0))
+        if (ScopedPointer<AudioFormatWriter> audioWriter = wavFormat->createWriterFor(outStream, 48000, numChannels, 24, StringPairArray(), 0))
         {
             audioWriter->writeFromAudioSampleBuffer(noiseBuffer, 0, noiseBuffer.getNumSamples());
         }
@@ -208,7 +208,7 @@ public:
                
                File newFile (encryptedFolder.getFullPathName() + "/" + file.getFileNameWithoutExtension() + "_encrypted" + file.getFileExtension());
                auto* outStream = new FileOutputStream(newFile);
-               if (ScopedPointer<AudioFormatWriter> writer = wavFormat->createWriterFor(outStream, reader->sampleRate, reader->numChannels, 24, StringPairArray(), 0) )
+               if (ScopedPointer<AudioFormatWriter> writer = wavFormat->createWriterFor(outStream, reader->sampleRate, reader->numChannels, reader->bitsPerSample, StringPairArray(), 0) )
                {
                    writer->writeFromAudioSampleBuffer(originalBuffer, 0, originalBuffer.getNumSamples());
                }
@@ -342,7 +342,7 @@ public:
                 
                 File newFile (decryptedFolder.getFullPathName() + "/" + file.getFileNameWithoutExtension() + "_decrypted" + file.getFileExtension());
                 auto* outStream = new FileOutputStream(newFile);
-                if (ScopedPointer<AudioFormatWriter> writer = wavFormat->createWriterFor(outStream, reader->sampleRate, reader->numChannels, 24, StringPairArray(), 0) )
+                if (ScopedPointer<AudioFormatWriter> writer = wavFormat->createWriterFor(outStream, reader->sampleRate, reader->numChannels, reader->bitsPerSample, StringPairArray(), 0) )
                 {
                     writer->writeFromAudioSampleBuffer(originalBuffer, 0, originalBuffer.getNumSamples());
                 }
