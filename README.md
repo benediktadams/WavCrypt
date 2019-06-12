@@ -17,7 +17,7 @@ WavCrypt is a small C++ / JUCE tool, which can generate a unique “Noise Key”
     - b. Second file chooser - select key .wav file for encryption
 
 5. Click “Decrypt .wav Files” button
-    -a. First file chooser - select directory containing encrypted samples
-    -b. Second file chooser - select key .wav file for decryption (ideally the same one used for encryption :) )
+    - a. First file chooser - select directory containing encrypted samples
+    - b. Second file chooser - select key .wav file for decryption (ideally the same one used for encryption :) )
 
 The resulting Encrypted/Decrypted directories will be placed next to their originals
