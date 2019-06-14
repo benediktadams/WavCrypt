@@ -23,7 +23,7 @@
 #pragma once
 
 #define KeySize 8192
-#define KeyChannels 2
+#define KeyChannels 1
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
@@ -200,13 +200,14 @@ public:
                    
                    for (int s = 0; s < reader->lengthInSamples; s++)
                    {
+                       writePointer[s] *= 0.5f;
                        writePointer[s] += (keyReadPointer[keyBufferReadHead] * -0.3f);
                        
                        keyBufferReadHead = (keyBufferReadHead + 1) % keyBufferLength;
                    }
                }
                
-               File newFile (encryptedFolder.getFullPathName() + "/" + file.getFileNameWithoutExtension() + "_encrypted" + file.getFileExtension());
+               File newFile (encryptedFolder.getFullPathName() + "/" + file.getFileNameWithoutExtension()  + ".yum");
                auto* outStream = new FileOutputStream(newFile);
                if (ScopedPointer<AudioFormatWriter> writer = wavFormat->createWriterFor(outStream, reader->sampleRate, reader->numChannels, reader->bitsPerSample, StringPairArray(), 0) )
                {
@@ -307,7 +308,7 @@ public:
     
     void run() override
     {
-        DirectoryIterator iter (encryptedFolder, true, "*.wav", File::findFiles);
+        DirectoryIterator iter (encryptedFolder, true, "*.yum", File::findFiles);
         
         auto wavFormat = afm.getKnownFormat(0);
         
@@ -315,8 +316,10 @@ public:
         {
             auto file = iter.getFile();
             
-            if (ScopedPointer<AudioFormatReader> reader = afm.createReaderFor(file))
+            if (ScopedPointer<MemoryMappedAudioFormatReader> reader = wavFormat->createMemoryMappedReader(file))
             {
+                reader->mapEntireFile();
+                reader->touchSample(0);
                 jassert(reader->numChannels == keyBuffer.getNumChannels()); //Channel mismatch between key and file to encrypt
                 
                 AudioBuffer<float> originalBuffer;
@@ -335,12 +338,12 @@ public:
                     for (int s = 0; s < reader->lengthInSamples; s++)
                     {
                         writePointer[s] += (keyReadPointer[keyBufferReadHead] * 0.3f);
-                        
+                        writePointer[s] /= 0.5f;
                         keyBufferReadHead = (keyBufferReadHead + 1) % keyBufferLength;
                     }
                 }
                 
-                File newFile (decryptedFolder.getFullPathName() + "/" + file.getFileNameWithoutExtension() + "_decrypted" + file.getFileExtension());
+                File newFile (decryptedFolder.getFullPathName() + "/" + file.getFileNameWithoutExtension() + "_decrypted" + ".wav");
                 auto* outStream = new FileOutputStream(newFile);
                 if (ScopedPointer<AudioFormatWriter> writer = wavFormat->createWriterFor(outStream, reader->sampleRate, reader->numChannels, reader->bitsPerSample, StringPairArray(), 0) )
                 {
