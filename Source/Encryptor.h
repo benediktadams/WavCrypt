@@ -9,7 +9,7 @@
  
  Copyright 2019 Benedikt Sailer - mail@benediktsailer.com
  
- Idea by Daniel Walz
+ Idea by Daniel Walz - https://foleysfinest.com/
  
  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  
@@ -23,7 +23,8 @@
 #pragma once
 
 #define KeySize 8192
-#define KeyChannels 1
+#define KeyChannels 2
+
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
@@ -65,9 +66,11 @@ public:
         for (auto ch = 0; ch < numChannels; ch++)
         {
             auto writePointer = noiseBuffer.getWritePointer(ch);
+          
             
             for (auto s = 0; s < KeySize; s++)
             {
+            
                 writePointer[s] = jmap (random.nextFloat(), 0.0f, 1.0f, -1.0f, 1.0f);
             }
         }
@@ -112,8 +115,6 @@ public:
     Thread("EncryptWavThread")
     {
         afm.registerBasicFormats();
-        
-       
     }
     
     void encryptWavFiles()
@@ -137,7 +138,7 @@ public:
         
         FileChooser keyFileChooser("Select Key File",
                                           File::getCurrentWorkingDirectory(),
-                                          "*.wav",
+                                          "*.yum",
                                           false,
                                           false,
                                           nullptr);
@@ -145,9 +146,11 @@ public:
         if (keyFileChooser.browseForFileToOpen())
         {
             auto keyFile = keyFileChooser.getResult();
-            
-            if (ScopedPointer<AudioFormatReader> reader = afm.createReaderFor(keyFile))
+            auto wavFormat = afm.getKnownFormat(0);
+            if (ScopedPointer<MemoryMappedAudioFormatReader> reader = wavFormat->createMemoryMappedReader(keyFile))
             {
+                reader->mapEntireFile();
+                reader->touchSample(0);
                 keyBuffer.setSize(reader->numChannels, reader->lengthInSamples, false, true, false);
                 reader->read(&keyBuffer, 0, reader->lengthInSamples, 0, true, reader->numChannels > 1);
                 keyBufferLength = reader->lengthInSamples;
@@ -173,7 +176,7 @@ public:
     
     void run() override
     {
-        DirectoryIterator iter (originalFolder, true, "*.wav", File::findFiles);
+        DirectoryIterator iter (originalFolder, true, "*.aif", File::findFiles);
         
         auto wavFormat = afm.getKnownFormat(0);
         
